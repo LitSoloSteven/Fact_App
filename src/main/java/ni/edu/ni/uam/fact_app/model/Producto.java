@@ -1,4 +1,23 @@
 package ni.edu.ni.uam.fact_app.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class Producto {
+    private Integer id;
+    private String codigo;
+    private String nombre;
+    private String Categoria;
+    private BigDecimal precioVenta;
+    private int existencia;
+    private String rutaImagen;
+    private boolean activo;
+
 }

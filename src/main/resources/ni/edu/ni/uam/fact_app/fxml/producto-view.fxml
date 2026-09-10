@@ -12,12 +12,12 @@
         <Insets top="15" right="15" bottom="15" left="15"/>
     </padding>
 
-    <!-- Formulario en la parte superior -->
+
     <top>
         <GridPane hgap="10" vgap="10">
             <padding><Insets bottom="15"/></padding>
 
-            <!-- Datos del Producto -->
+
             <Label text="Código:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
             <TextField fx:id="txtCodigo" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
@@ -36,17 +36,17 @@
             <Label text="Activo:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
             <CheckBox fx:id="chkActivo" text="Sí" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
-            <!-- Imagen (ocupa varias filas) -->
+
             <VBox alignment="CENTER" spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="6">
                 <GridPane.margin><Insets left="40"/></GridPane.margin>
-                <!-- Un borde simple para que se distinga dónde va la imagen -->
+
                 <ImageView fx:id="imgProducto" fitHeight="150" fitWidth="150" preserveRatio="true" style="-fx-effect: innershadow(gaussian, gray, 5, 0, 0, 0);" />
                 <Button fx:id="btnImagen" text="Seleccionar Imagen..." onAction="#seleccionarImagen"/>
             </VBox>
         </GridPane>
     </top>
 
-    <!-- Tabla en el centro -->
+
     <center>
         <TableView fx:id="tblProductos" prefHeight="200.0" prefWidth="200.0">
             <columns>
@@ -63,7 +63,7 @@
         </TableView>
     </center>
 
-    <!-- Botones de Acción en la parte inferior -->
+
     <bottom>
         <HBox alignment="CENTER_RIGHT" spacing="10">
             <padding><Insets top="15"/></padding>

@@ -14,7 +14,7 @@ public class Producto {
     private Integer id;
     private String codigo;
     private String nombre;
-    private String Categoria;
+    private Categoria categoria;
     private BigDecimal precioVenta;
     private int existencia;
     private String rutaImagen;

@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ni.edu.ni.uam.fact_app.controller.MenuPrincipalController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<BorderPane prefHeight="600.0" prefWidth="900.0"
+            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ni.edu.ni.uam.fact_app.controller.MenuPrincipalController">
+    <top>
+        <VBox>
+            <MenuBar>
+                <Menu text="Módulos">
+                    <MenuItem fx:id="mnuProductos" text="Productos" onAction="#abrirProductos"/>
+                    <MenuItem fx:id="mnuCategorias" text="Categorías" onAction="#abrirCategorias"/>
+                    <MenuItem fx:id="mnuCargos" text="Cargos" onAction="#abrirCargos"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="mnuSalir" text="Salir" onAction="#salir"/>
+                </Menu>
+            </MenuBar>
+            <ToolBar>
+                <Button fx:id="btnProductos" text="Productos" onAction="#abrirProductos"/>
+                <Button fx:id="btnCategorias" text="Categorías" onAction="#abrirCategorias"/>
+                <Button fx:id="btnCargos" text="Cargos" onAction="#abrirCargos"/>
+                <Pane HBox.hgrow="ALWAYS" /> <!-- Espaciador para empujar el botón salir a la derecha -->
+                <Button fx:id="btnSalir" text="Salir" onAction="#salir"/>
+            </ToolBar>
+        </VBox>
+    </top>
+    <center>
+        <Label text="Sistema de facturación" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+    </center>
+</BorderPane>

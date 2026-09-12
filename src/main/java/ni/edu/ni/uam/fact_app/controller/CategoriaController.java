@@ -18,11 +18,11 @@ public class CategoriaController {
     @FXML private TableColumn<Categoria, Boolean> colActiva;
 
     private final ObservableList<Categoria> categorias = FXCollections.observableArrayList();
-    private int contadorId = 4; // Comienza en 4 porque ya quemamos 3 en initialize
+    private int contadorId = 4;
 
     @FXML
     private void initialize() {
-        // Precargar las mismas categorías que usas en el ProductoController
+
         categorias.addAll(
                 new Categoria(1, "Alimentos", true),
                 new Categoria(2, "Bebidas", true),

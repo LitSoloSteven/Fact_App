@@ -8,44 +8,56 @@ import java.io.IOException;
 
 public class MenuPrincipalController {
 
+
+    @FXML private Label lblTotalProductos;
+    @FXML private Label lblTotalCategorias;
+    @FXML private Label lblTotalCargos;
+
+    @FXML
+    public void initialize() {
+        actualizarDashboard();
+    }
+
+    private void actualizarDashboard() {
+
+        lblTotalProductos.setText("12");
+        lblTotalCategorias.setText("3");
+        lblTotalCargos.setText("5");
+    }
+
     @FXML
     private void abrirProductos() {
         try {
-            SceneManager.abrirVentana(
-                    "/ni/edu/ni/uam/fact_app/fxml/producto-view.fxml",
-                    "Gestión de productos");
+            SceneManager.abrirVentana("/ni/edu/ni/uam/fact_app/fxml/producto-view.fxml", "Gestión de productos");
+            actualizarDashboard();
         } catch (IOException e) {
-            new Alert(Alert.AlertType.ERROR, "No fue posible abrir Productos.\n" + e.getMessage()).showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Error: " + e.getMessage()).showAndWait();
         }
     }
 
     @FXML
     private void abrirCategorias() {
         try {
-            SceneManager.abrirVentana(
-                    "/ni/edu/ni/uam/fact_app/fxml/categoria-view.fxml",
-                    "Gestión de categorías");
+            SceneManager.abrirVentana("/ni/edu/ni/uam/fact_app/fxml/categoria-view.fxml", "Gestión de categorías");
+            actualizarDashboard();
         } catch (IOException e) {
-            new Alert(Alert.AlertType.ERROR, "No fue posible abrir Categorías.\n" + e.getMessage()).showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Error: " + e.getMessage()).showAndWait();
         }
     }
 
     @FXML
     private void abrirCargos() {
         try {
-            // Asegúrate de que tu archivo fxml de cargos se llame exactamente "cargo-view.fxml"
-            SceneManager.abrirVentana(
-                    "/ni/edu/ni/uam/fact_app/fxml/cargo-view.fxml",
-                    "Gestión de cargos");
+            SceneManager.abrirVentana("/ni/edu/ni/uam/fact_app/fxml/cargo-view.fxml", "Gestión de cargos");
+            actualizarDashboard();
         } catch (IOException e) {
-            new Alert(Alert.AlertType.ERROR, "No fue posible abrir Cargos.\n" + e.getMessage()).showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Error: " + e.getMessage()).showAndWait();
         }
     }
 
     @FXML
     private void salir() {
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION,
-                "¿Desea cerrar la aplicación?", ButtonType.OK, ButtonType.CANCEL);
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "¿Desea cerrar la aplicación?", ButtonType.OK, ButtonType.CANCEL);
         if (a.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             Platform.exit();
         }

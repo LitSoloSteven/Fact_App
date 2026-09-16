@@ -11,12 +11,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ni.edu.ni.uam.fact_app.model.Categoria;
 import ni.edu.ni.uam.fact_app.model.Producto;
+import ni.edu.ni.uam.fact_app.util.DataStore;
 
 import java.io.File;
 import java.math.BigDecimal;
 
 public class ProductoController {
-
 
     @FXML private TextField txtCodigo;
     @FXML private TextField txtNombre;
@@ -26,8 +26,8 @@ public class ProductoController {
     @FXML private CheckBox chkActivo;
     @FXML private ImageView imgProducto;
 
-
     @FXML private TableView<Producto> tblProductos;
+    @FXML private TableColumn<Producto, String> colFoto;
     @FXML private TableColumn<Producto, String> colCodigo;
     @FXML private TableColumn<Producto, String> colNombre;
     @FXML private TableColumn<Producto, Categoria> colCategoria;
@@ -35,41 +35,102 @@ public class ProductoController {
     @FXML private TableColumn<Producto, Integer> colExistencia;
     @FXML private TableColumn<Producto, Boolean> colActivo;
 
-
-    private final ObservableList<Producto> productos = FXCollections.observableArrayList();
-
-
+    private final ObservableList<Producto> productos = DataStore.getProductos();
     private String rutaImagen;
 
     @FXML
     private void initialize() {
-
         cmbCategoria.setItems(FXCollections.observableArrayList(
                 new Categoria(1, "Alimentos", true),
                 new Categoria(2, "Bebidas", true),
                 new Categoria(3, "Limpieza", true)
         ));
 
-
         tblProductos.setItems(productos);
         chkActivo.setSelected(true);
-
-
+        cmbCategoria.setItems(DataStore.getCategorias());
+        colFoto.setCellValueFactory(new PropertyValueFactory<>("rutaImagen"));
         colCodigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colCategoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
         colPrecio.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
         colExistencia.setCellValueFactory(new PropertyValueFactory<>("existencia"));
         colActivo.setCellValueFactory(new PropertyValueFactory<>("activo"));
+
+
+        colFoto.setCellFactory(col -> new TableCell<Producto, String>() {
+            private final ImageView thumbnail = new ImageView();
+            {
+                thumbnail.setFitHeight(36);
+                thumbnail.setFitWidth(36);
+                thumbnail.setPreserveRatio(true);
+            }
+
+            @Override
+            protected void updateItem(String ruta, boolean empty) {
+                super.updateItem(ruta, empty);
+                if (empty || ruta == null || ruta.isBlank()) {
+                    setGraphic(null);
+                } else {
+                    try {
+                        thumbnail.setImage(new Image(ruta, 36, 36, true, true));
+                        setGraphic(thumbnail);
+                    } catch (Exception e) {
+                        setGraphic(null);
+                    }
+                }
+            }
+        });
+
+
+        colActivo.setCellFactory(col -> new TableCell<Producto, Boolean>() {
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item ? "Activo" : "Inactivo");
+                    setStyle(item
+                            ? "-fx-text-fill: #2e7d32; -fx-font-weight: bold;"
+                            : "-fx-text-fill: #c62828; -fx-font-weight: bold;");
+                }
+            }
+        });
+
+
+        tblProductos.getSelectionModel().selectedItemProperty().addListener((obs, anterior, seleccionado) -> {
+            if (seleccionado != null) {
+                txtCodigo.setText(seleccionado.getCodigo());
+                txtNombre.setText(seleccionado.getNombre());
+                cmbCategoria.setValue(seleccionado.getCategoria());
+                txtPrecio.setText(seleccionado.getPrecioVenta() != null ? seleccionado.getPrecioVenta().toString() : "");
+                txtExistencia.setText(String.valueOf(seleccionado.getExistencia()));
+                chkActivo.setSelected(seleccionado.isActivo());
+
+                if (seleccionado.getRutaImagen() != null && !seleccionado.getRutaImagen().isBlank()) {
+                    try {
+                        imgProducto.setImage(new Image(seleccionado.getRutaImagen()));
+                        rutaImagen = seleccionado.getRutaImagen();
+                    } catch (Exception e) {
+                        imgProducto.setImage(null);
+                        rutaImagen = null;
+                    }
+                } else {
+                    imgProducto.setImage(null);
+                    rutaImagen = null;
+                }
+            }
+        });
     }
 
     @FXML
     private void seleccionarImagen() {
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
+                new FileChooser.ExtensionFilter("Archivos de Imagen", "*.png", "*.jpg", "*.jpeg", "*.gif")
         );
-
 
         File archivo = chooser.showOpenDialog(txtCodigo.getScene().getWindow());
 
@@ -81,7 +142,6 @@ public class ProductoController {
 
     @FXML
     private void guardar() {
-
         if (txtCodigo.getText().isBlank() || txtNombre.getText().isBlank()
                 || txtPrecio.getText().isBlank() || txtExistencia.getText().isBlank()
                 || cmbCategoria.getValue() == null) {
@@ -94,7 +154,7 @@ public class ProductoController {
             int existencia = Integer.parseInt(txtExistencia.getText().trim());
 
             if (precio.signum() <= 0 || existencia < 0) {
-                mensaje(Alert.AlertType.WARNING, "Precio mayor que cero y existencia no negativa.");
+                mensaje(Alert.AlertType.WARNING, "Precio debe ser mayor a 0 y existencia no negativa.");
                 return;
             }
 
@@ -119,7 +179,6 @@ public class ProductoController {
 
     @FXML
     private void cerrar() {
-
         ((Stage) txtCodigo.getScene().getWindow()).close();
     }
 
@@ -132,6 +191,7 @@ public class ProductoController {
         chkActivo.setSelected(true);
         imgProducto.setImage(null);
         rutaImagen = null;
+        tblProductos.getSelectionModel().clearSelection();
     }
 
     private void mensaje(Alert.AlertType tipo, String texto) {

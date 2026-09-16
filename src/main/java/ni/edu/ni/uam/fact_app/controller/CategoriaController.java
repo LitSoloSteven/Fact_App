@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import ni.edu.ni.uam.fact_app.model.Categoria;
+import ni.edu.ni.uam.fact_app.util.DataStore;
 
 public class CategoriaController {
     @FXML private TextField txtNombre;
@@ -17,7 +18,7 @@ public class CategoriaController {
     @FXML private TableColumn<Categoria, String> colNombre;
     @FXML private TableColumn<Categoria, Boolean> colActiva;
 
-    private final ObservableList<Categoria> categorias = FXCollections.observableArrayList();
+    private final ObservableList<Categoria> categorias = DataStore.getCategorias();
     private int contadorId = 4;
 
     @FXML
@@ -34,6 +35,21 @@ public class CategoriaController {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colActiva.setCellValueFactory(new PropertyValueFactory<>("activa"));
+        colActiva.setCellFactory(col -> new TableCell<Categoria, Boolean>() {
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item ? "Activo" : "Inactivo");
+                    setStyle(item
+                            ? "-fx-text-fill: #2e7d32; -fx-font-weight: bold;"
+                            : "-fx-text-fill: #c62828; -fx-font-weight: bold;");
+                }
+            }
+        });
     }
 
     @FXML

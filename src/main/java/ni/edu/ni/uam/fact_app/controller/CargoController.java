@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ni.edu.ni.uam.fact_app.model.Cargo;
+import ni.edu.ni.uam.fact_app.util.DataStore;
 
 public class CargoController {
 
@@ -19,7 +20,7 @@ public class CargoController {
     @FXML private TableColumn<Cargo, String> colNombre;
     @FXML private TableColumn<Cargo, String> colDescripcion;
 
-    private final ObservableList<Cargo> listaCargos = FXCollections.observableArrayList();
+    private final ObservableList<Cargo> listaCargos = DataStore.getCargos();
 
     @FXML
     public void initialize() {

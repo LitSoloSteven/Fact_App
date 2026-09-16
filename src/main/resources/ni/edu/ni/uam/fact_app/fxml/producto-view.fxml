@@ -4,7 +4,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0"
+<BorderPane prefHeight="600.0" prefWidth="850.0"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="ni.edu.ni.uam.fact_app.controller.ProductoController">
 
@@ -12,11 +12,9 @@
         <Insets top="15" right="15" bottom="15" left="15"/>
     </padding>
 
-
     <top>
         <GridPane hgap="10" vgap="10">
             <padding><Insets bottom="15"/></padding>
-
 
             <Label text="Código:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
             <TextField fx:id="txtCodigo" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
@@ -36,25 +34,28 @@
             <Label text="Activo:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
             <CheckBox fx:id="chkActivo" text="Sí" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
-
+            <!-- Contenedor con marco visual para la imagen -->
             <VBox alignment="CENTER" spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="6">
                 <GridPane.margin><Insets left="40"/></GridPane.margin>
-
-                <ImageView fx:id="imgProducto" fitHeight="150" fitWidth="150" preserveRatio="true" style="-fx-effect: innershadow(gaussian, gray, 5, 0, 0, 0);" />
+                <StackPane prefHeight="150.0" prefWidth="150.0"
+                           style="-fx-border-color: #cccccc; -fx-border-style: dashed; -fx-border-width: 2; -fx-background-color: #fafafa; -fx-border-radius: 4;">
+                    <Label text="Sin imagen" style="-fx-text-fill: #999999;" />
+                    <ImageView fx:id="imgProducto" fitHeight="145" fitWidth="145" preserveRatio="true" />
+                </StackPane>
                 <Button fx:id="btnImagen" text="Seleccionar Imagen..." onAction="#seleccionarImagen"/>
             </VBox>
         </GridPane>
     </top>
 
-
     <center>
         <TableView fx:id="tblProductos" prefHeight="200.0" prefWidth="200.0">
             <columns>
-                <TableColumn fx:id="colCodigo" text="Código" prefWidth="100"/>
-                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200"/>
-                <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="120"/>
-                <TableColumn fx:id="colPrecio" text="Precio" prefWidth="100"/>
-                <TableColumn fx:id="colExistencia" text="Existencia" prefWidth="100"/>
+                <TableColumn fx:id="colFoto" text="Foto" prefWidth="60"/>
+                <TableColumn fx:id="colCodigo" text="Código" prefWidth="90"/>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="180"/>
+                <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="110"/>
+                <TableColumn fx:id="colPrecio" text="Precio" prefWidth="90"/>
+                <TableColumn fx:id="colExistencia" text="Existencia" prefWidth="80"/>
                 <TableColumn fx:id="colActivo" text="Estado" prefWidth="80"/>
             </columns>
             <columnResizePolicy>
@@ -62,7 +63,6 @@
             </columnResizePolicy>
         </TableView>
     </center>
-
 
     <bottom>
         <HBox alignment="CENTER_RIGHT" spacing="10">

@@ -29,10 +29,6 @@ public class CargoController {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 
-
-        listaCargos.add(new Cargo(1, "Administrador", "Acceso total al sistema"));
-        listaCargos.add(new Cargo(2, "Cajero", "Gestión de facturas y cobros"));
-
         tblCargos.setItems(listaCargos);
     }
 

@@ -23,12 +23,7 @@ public class CategoriaController {
 
     @FXML
     private void initialize() {
-
-        categorias.addAll(
-                new Categoria(1, "Alimentos", true),
-                new Categoria(2, "Bebidas", true),
-                new Categoria(3, "Limpieza", true)
-        );
+        
         tblCategorias.setItems(categorias);
         chkActiva.setSelected(true);
 

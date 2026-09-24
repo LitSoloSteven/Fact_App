@@ -5,8 +5,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import ni.edu.ni.uam.fact_app.dao.CargoDAO;
 import ni.edu.ni.uam.fact_app.model.Cargo;
-import ni.edu.ni.uam.fact_app.util.DataStore;
+
+import java.sql.SQLException;
 
 public class CargoController {
 
@@ -20,16 +22,26 @@ public class CargoController {
     @FXML private TableColumn<Cargo, String> colNombre;
     @FXML private TableColumn<Cargo, String> colDescripcion;
 
-    private final ObservableList<Cargo> listaCargos = DataStore.getCargos();
+    private final CargoDAO cargoDAO = new CargoDAO();
+    private final ObservableList<Cargo> listaCargos = FXCollections.observableArrayList();
+    private boolean modoEdicion = false;
 
     @FXML
     public void initialize() {
-
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 
         tblCargos.setItems(listaCargos);
+        cargarDatos();
+    }
+
+    private void cargarDatos() {
+        try {
+            listaCargos.setAll(cargoDAO.listar());
+        } catch (SQLException e) {
+            mostrarMensaje(Alert.AlertType.ERROR, "Error", "No se pudieron cargar los cargos: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -41,46 +53,47 @@ public class CargoController {
 
         try {
             int id = Integer.parseInt(txtId.getText().trim());
+            Cargo cargo = new Cargo(id, txtNombre.getText().trim(), txtDescripcion.getText().trim());
 
-
-            boolean existe = listaCargos.stream().anyMatch(c -> c.getId().equals(id));
-            if (existe) {
-                mostrarMensaje(Alert.AlertType.ERROR, "Error", "El ID ya está registrado.");
-                return;
+            if (modoEdicion) {
+                cargoDAO.actualizar(cargo);
+                mostrarMensaje(Alert.AlertType.INFORMATION, "Éxito", "Cargo actualizado correctamente.");
+            } else {
+                cargoDAO.guardar(cargo);
+                mostrarMensaje(Alert.AlertType.INFORMATION, "Éxito", "Cargo guardado correctamente.");
             }
 
-            listaCargos.add(new Cargo(id, txtNombre.getText().trim(), txtDescripcion.getText().trim()));
-            mostrarMensaje(Alert.AlertType.INFORMATION, "Éxito", "Cargo agregado correctamente.");
+            cargarDatos();
             limpiarCampos();
 
         } catch (NumberFormatException e) {
             mostrarMensaje(Alert.AlertType.ERROR, "Error", "El ID debe ser un número entero válido.");
+        } catch (SQLException e) {
+            mostrarMensaje(Alert.AlertType.ERROR, "Error BD", "Error al guardar en base de datos: " + e.getMessage());
         }
     }
 
     @FXML
     private void buscar() {
         if (txtBuscar.getText().isBlank()) {
-            tblCargos.setItems(listaCargos);
+            cargarDatos();
             return;
         }
 
         try {
             int idBusqueda = Integer.parseInt(txtBuscar.getText().trim());
-            ObservableList<Cargo> resultado = FXCollections.observableArrayList();
+            Cargo encontrado = cargoDAO.buscar(idBusqueda);
 
-            for (Cargo c : listaCargos) {
-                if (c.getId().equals(idBusqueda)) {
-                    resultado.add(c);
-                }
-            }
-
-            tblCargos.setItems(resultado);
-            if (resultado.isEmpty()) {
+            if (encontrado != null) {
+                tblCargos.setItems(FXCollections.observableArrayList(encontrado));
+            } else {
+                tblCargos.setItems(FXCollections.emptyObservableList());
                 mostrarMensaje(Alert.AlertType.INFORMATION, "Búsqueda", "No se encontró ningún cargo con ese ID.");
             }
         } catch (NumberFormatException e) {
             mostrarMensaje(Alert.AlertType.ERROR, "Error", "Ingrese un ID numérico para buscar.");
+        } catch (SQLException e) {
+            mostrarMensaje(Alert.AlertType.ERROR, "Error BD", e.getMessage());
         }
     }
 
@@ -96,20 +109,24 @@ public class CargoController {
         txtId.setDisable(true);
         txtNombre.setText(seleccionado.getNombre());
         txtDescripcion.setText(seleccionado.getDescripcion());
-
-
-        listaCargos.remove(seleccionado);
+        modoEdicion = true;
     }
 
     @FXML
     private void eliminar() {
         Cargo seleccionado = tblCargos.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
-            listaCargos.remove(seleccionado);
-            mostrarMensaje(Alert.AlertType.INFORMATION, "Éxito", "Cargo eliminado.");
-            limpiarCampos();
-        } else {
+        if (seleccionado == null) {
             mostrarMensaje(Alert.AlertType.WARNING, "Advertencia", "Seleccione un cargo de la tabla para eliminar.");
+            return;
+        }
+
+        try {
+            cargoDAO.eliminar(seleccionado.getId());
+            mostrarMensaje(Alert.AlertType.INFORMATION, "Éxito", "Cargo eliminado.");
+            cargarDatos();
+            limpiarCampos();
+        } catch (SQLException e) {
+            mostrarMensaje(Alert.AlertType.ERROR, "Error BD", "No se pudo eliminar: " + e.getMessage());
         }
     }
 
@@ -119,6 +136,7 @@ public class CargoController {
         txtNombre.clear();
         txtDescripcion.clear();
         txtBuscar.clear();
+        modoEdicion = false;
     }
 
     private void mostrarMensaje(Alert.AlertType tipo, String titulo, String contenido) {

@@ -4,10 +4,13 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.Duration;
-import ni.edu.ni.uam.fact_app.util.DataStore;
+import ni.edu.ni.uam.fact_app.dao.CargoDAO;
+import ni.edu.ni.uam.fact_app.dao.CategoriaDAO;
+import ni.edu.ni.uam.fact_app.dao.ProductoDAO;
 import ni.edu.ni.uam.fact_app.util.SceneManager;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class MenuPrincipalController {
 
@@ -19,6 +22,10 @@ public class MenuPrincipalController {
     @FXML private Button btnCategorias;
     @FXML private Button btnCargos;
     @FXML private Button btnSalir;
+
+    private final ProductoDAO productoDAO = new ProductoDAO();
+    private final CategoriaDAO categoriaDAO = new CategoriaDAO();
+    private final CargoDAO cargoDAO = new CargoDAO();
 
     @FXML
     public void initialize() {
@@ -36,9 +43,15 @@ public class MenuPrincipalController {
     }
 
     private void actualizarDashboard() {
-        lblTotalProductos.setText(String.valueOf(DataStore.getProductos().size()));
-        lblTotalCategorias.setText(String.valueOf(DataStore.getCategorias().size()));
-        lblTotalCargos.setText(String.valueOf(DataStore.getCargos().size()));
+        try {
+            lblTotalProductos.setText(String.valueOf(productoDAO.listar().size()));
+            lblTotalCategorias.setText(String.valueOf(categoriaDAO.listar().size()));
+            lblTotalCargos.setText(String.valueOf(cargoDAO.listar().size()));
+        } catch (SQLException e) {
+            lblTotalProductos.setText("!");
+            lblTotalCategorias.setText("!");
+            lblTotalCargos.setText("!");
+        }
     }
 
     @FXML

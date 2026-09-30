@@ -42,7 +42,7 @@
                 </StackPane>
                 <Button fx:id="btnImagen" onAction="#seleccionarImagen" text="Seleccionar Imagen..." />
             </VBox>
-         <TextField fx:id="txtBusqueda" prefHeight="25.0" prefWidth="131.0" promptText="Busqueda" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+         <TextField fx:id="txtBusqueda" onAction="#buscar" prefHeight="25.0" prefWidth="131.0" promptText="Busqueda" GridPane.columnIndex="4" GridPane.rowIndex="2" />
          <Button fx:id="btnBusqueda" onAction="#buscar" text="Buscar" GridPane.columnIndex="5" GridPane.rowIndex="2" />
          <columnConstraints>
             <ColumnConstraints />

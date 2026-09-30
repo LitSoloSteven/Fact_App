@@ -60,6 +60,28 @@ public class CargoDAO implements CrudDAO<Cargo, Integer> {
         }
         return null;
     }
+    public List buscarPorCriterio(String criterio) throws SQLException {
+        List lista = new ArrayList<>();
+        String sql = """
+            SELECT id, nombre, descripcion 
+            FROM cargo 
+            WHERE LOWER(nombre) LIKE LOWER(?) OR CAST(id AS TEXT) = ?
+            ORDER BY id
+            """;
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            String texto = criterio.trim();
+            ps.setString(1, "%" + texto + "%");
+            ps.setString(2, texto);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(new Cargo(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion")));
+                }
+            }
+        }
+        return lista;
+    }
 
     @Override
     public List<Cargo> listar() throws SQLException {

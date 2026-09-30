@@ -9,6 +9,7 @@ import ni.edu.ni.uam.fact_app.dao.CargoDAO;
 import ni.edu.ni.uam.fact_app.model.Cargo;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class CargoController {
 
@@ -75,25 +76,25 @@ public class CargoController {
 
     @FXML
     private void buscar() {
-        if (txtBuscar.getText().isBlank()) {
+        String criterio = txtBuscar.getText().trim();
+        
+        if (criterio.isBlank()) {
             cargarDatos();
             return;
         }
 
         try {
-            int idBusqueda = Integer.parseInt(txtBuscar.getText().trim());
-            Cargo encontrado = cargoDAO.buscar(idBusqueda);
+            List encontrados = cargoDAO.buscarPorCriterio(criterio);
 
-            if (encontrado != null) {
-                tblCargos.setItems(FXCollections.observableArrayList(encontrado));
+            if (!encontrados.isEmpty()) {
+                listaCargos.setAll(encontrados);
             } else {
-                tblCargos.setItems(FXCollections.emptyObservableList());
-                mostrarMensaje(Alert.AlertType.INFORMATION, "Búsqueda", "No se encontró ningún cargo con ese ID.");
+                listaCargos.clear();
+                mostrarMensaje(Alert.AlertType.INFORMATION, "Búsqueda",
+                        "No se encontró ningún cargo que coincida con: \"" + criterio + "\".");
             }
-        } catch (NumberFormatException e) {
-            mostrarMensaje(Alert.AlertType.ERROR, "Error", "Ingrese un ID numérico para buscar.");
         } catch (SQLException e) {
-            mostrarMensaje(Alert.AlertType.ERROR, "Error BD", e.getMessage());
+            mostrarMensaje(Alert.AlertType.ERROR, "Error BD", "Error al buscar cargo: " + e.getMessage());
         }
     }
 

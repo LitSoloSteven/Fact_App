@@ -48,7 +48,7 @@
         </Separator>
         <ToolBar prefHeight="40.0" prefWidth="200.0">
             <items>
-                <TextField fx:id="txtBuscar" prefHeight="25.0" prefWidth="430.0" promptText="Busqueda" />
+                <TextField fx:id="txtBuscar" onAction="#buscar" prefHeight="25.0" prefWidth="430.0" promptText="Busqueda" />
                 <Button fx:id="btnBuscar" mnemonicParsing="false" onAction="#buscar" prefHeight="25.0" prefWidth="111.0" text="Buscar" />
             </items>
         </ToolBar>

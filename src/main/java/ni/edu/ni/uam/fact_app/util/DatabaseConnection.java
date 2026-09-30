@@ -13,7 +13,7 @@ public class DatabaseConnection {
             "postgres";
 
     private static final String PASSWORD =
-            "1234";
+            "STIVEN0801";
 
     public static Connection getConnection()
             throws SQLException {

@@ -51,7 +51,6 @@
         </VBox>
     </top>
 
-    <!-- Resumen dispuesto de manera vertical a la izquierda -->
     <left>
         <VBox alignment="CENTER" spacing="15.0">
             <padding>
@@ -60,19 +59,19 @@
 
             <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Resumen" />
 
-            <!-- Tarjeta Productos -->
+
             <VBox alignment="CENTER" prefHeight="95.0" prefWidth="180.0" spacing="4.0" style="-fx-background-color: #e3f2fd; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 3);">
                 <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1565c0;" text="Productos" />
                 <Label fx:id="lblTotalProductos" style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: #0d47a1;" text="0" />
             </VBox>
 
-            <!-- Tarjeta Categorías -->
+
             <VBox alignment="CENTER" prefHeight="95.0" prefWidth="180.0" spacing="4.0" style="-fx-background-color: #e8f5e9; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 3);">
                 <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;" text="Categorías" />
                 <Label fx:id="lblTotalCategorias" style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: #1b5e20;" text="0" />
             </VBox>
 
-            <!-- Tarjeta Cargos -->
+
             <VBox alignment="CENTER" prefHeight="95.0" prefWidth="180.0" spacing="4.0" style="-fx-background-color: #fff3e0; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 3);">
                 <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #ef6c00;" text="Cargos" />
                 <Label fx:id="lblTotalCargos" style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: #e65100;" text="0" />
@@ -80,7 +79,7 @@
         </VBox>
     </left>
 
-    <!-- Logo institucional en la parte derecha / centro de la escena -->
+
     <center>
         <VBox alignment="CENTER" spacing="15.0">
             <padding>
@@ -90,11 +89,9 @@
                 <Image url="@../icons/logo.png" />
             </ImageView>
             <Label style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Sistema de Facturación" />
-            <Label style="-fx-font-size: 15px; -fx-text-fill: #7f8c8d;" text="Panel de Administración General" />
         </VBox>
     </center>
 
-    <!-- Botón Salir posicionado abajo a la derecha -->
     <bottom>
         <HBox alignment="CENTER_RIGHT">
             <padding>

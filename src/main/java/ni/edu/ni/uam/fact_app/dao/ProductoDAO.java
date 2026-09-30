@@ -64,7 +64,29 @@ public class ProductoDAO implements CrudDAO<Producto, Integer> {
             ps.executeUpdate();
         }
     }
-
+    public List buscarPorCriterio(String criterio) throws SQLException {
+        List lista = new ArrayList<>();
+        String sql = """
+            SELECT p.id, p.codigo, p.nombre, p.categoria_id, c.nombre AS cat_nombre, c.activa AS cat_activa,
+                   p.precio_venta, p.existencia, p.ruta_imagen, p.activo
+            FROM producto p
+            INNER JOIN categoria c ON p.categoria_id = c.id
+            WHERE LOWER(p.nombre) LIKE LOWER(?) OR LOWER(p.codigo) LIKE LOWER(?)
+            ORDER BY p.id
+            """;
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            String filtro = "%" + criterio.trim() + "%";
+            ps.setString(1, filtro);
+            ps.setString(2, filtro);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(mapearProducto(rs));
+                }
+            }
+        }
+        return lista;
+    }
     @Override
     public Producto buscar(Integer id) throws SQLException {
         String sql = """
@@ -122,5 +144,15 @@ public class ProductoDAO implements CrudDAO<Producto, Integer> {
                 rs.getString("ruta_imagen"),
                 rs.getBoolean("activo")
         );
+    }
+    public boolean existeNombre(String nombre) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM producto WHERE LOWER(TRIM(nombre)) = LOWER(TRIM(?))";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
+        }
     }
 }

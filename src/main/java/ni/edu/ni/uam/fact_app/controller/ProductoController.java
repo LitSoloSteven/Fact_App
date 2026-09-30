@@ -11,12 +11,14 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ni.edu.ni.uam.fact_app.dao.CategoriaDAO;
 import ni.edu.ni.uam.fact_app.dao.ProductoDAO;
+import ni.edu.ni.uam.fact_app.model.Cargo;
 import ni.edu.ni.uam.fact_app.model.Categoria;
 import ni.edu.ni.uam.fact_app.model.Producto;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.List;
 
 public class ProductoController {
 
@@ -27,6 +29,7 @@ public class ProductoController {
     @FXML private ComboBox<Categoria> cmbCategoria;
     @FXML private CheckBox chkActivo;
     @FXML private ImageView imgProducto;
+    @FXML private TextField txtBusqueda;
 
     @FXML private TableView<Producto> tblProductos;
     @FXML private TableColumn<Producto, String> colFoto;
@@ -36,6 +39,7 @@ public class ProductoController {
     @FXML private TableColumn<Producto, BigDecimal> colPrecio;
     @FXML private TableColumn<Producto, Integer> colExistencia;
     @FXML private TableColumn<Producto, Boolean> colActivo;
+
 
     private final ProductoDAO productoDAO = new ProductoDAO();
     private final CategoriaDAO categoriaDAO = new CategoriaDAO();
@@ -100,7 +104,7 @@ public class ProductoController {
                 txtCodigo.setText(seleccionado.getCodigo());
                 txtNombre.setText(seleccionado.getNombre());
 
-                // Selecciona la categoría correcta comparando por ID
+
                 for (Categoria cat : cmbCategoria.getItems()) {
                     if (cat.getId().equals(seleccionado.getCategoria().getId())) {
                         cmbCategoria.setValue(cat);
@@ -178,10 +182,19 @@ public class ProductoController {
                 return;
             }
 
+            String nombre = txtNombre.getText().trim();
+
+
+            if (productoDAO.existeNombre(nombre)) {
+                mensaje(Alert.AlertType.WARNING, "Ya existe un producto registrado con el nombre \"" + nombre + "\".");
+                txtNombre.requestFocus();
+                return;
+            }
+
             Producto nuevo = new Producto(
                     null,
                     txtCodigo.getText().trim(),
-                    txtNombre.getText().trim(),
+                    nombre,
                     cmbCategoria.getValue(),
                     precio,
                     existencia,
@@ -199,6 +212,60 @@ public class ProductoController {
         } catch (SQLException e) {
             mensaje(Alert.AlertType.ERROR, "Error al guardar en base de datos: " + e.getMessage());
         }
+    }
+    @FXML
+    private void buscar() {
+        String texto = txtBusqueda.getText().trim();
+
+        if (texto.isBlank()) {
+            cargarProductos();
+            return;
+        }
+
+        try {
+            List resultados = productoDAO.buscarPorCriterio(texto);
+
+            if (!resultados.isEmpty()) {
+                productos.setAll(resultados);
+            } else {
+                productos.clear();
+                mensaje(Alert.AlertType.INFORMATION, "No se encontraron productos con el criterio: \"" + texto + "\".");
+            }
+        } catch (SQLException e) {
+            mensaje(Alert.AlertType.ERROR, "Error en base de datos al buscar: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void eliminar() {
+        Producto seleccionado = tblProductos.getSelectionModel().getSelectedItem();
+
+        if (seleccionado == null) {
+            mensaje(Alert.AlertType.WARNING, "Debe seleccionar un producto de la tabla para eliminar.");
+            return;
+        }
+
+        Alert confirmacion = new Alert(
+                Alert.AlertType.CONFIRMATION,
+                "¿Está seguro de que desea eliminar el producto \"" + seleccionado.getNombre() + "\"?",
+                ButtonType.YES,
+                ButtonType.NO
+        );
+        confirmacion.setTitle("Confirmar eliminación");
+        confirmacion.setHeaderText(null);
+
+        confirmacion.showAndWait().ifPresent(respuesta -> {
+            if (respuesta == ButtonType.YES) {
+                try {
+                    productoDAO.eliminar(seleccionado.getId());
+                    mensaje(Alert.AlertType.INFORMATION, "Producto eliminado correctamente.");
+                    cargarProductos();
+                    limpiar();
+                } catch (SQLException e) {
+                    mensaje(Alert.AlertType.ERROR, "Error al eliminar producto: " + e.getMessage());
+                }
+            }
+        });
     }
 
     @FXML

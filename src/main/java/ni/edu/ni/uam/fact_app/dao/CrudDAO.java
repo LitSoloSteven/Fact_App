@@ -3,7 +3,6 @@ package ni.edu.ni.uam.fact_app.dao;
 import java.sql.SQLException;
 import java.util.List;
 
-
 public interface CrudDAO<T, ID> {
 
     void guardar(T entidad) throws SQLException;

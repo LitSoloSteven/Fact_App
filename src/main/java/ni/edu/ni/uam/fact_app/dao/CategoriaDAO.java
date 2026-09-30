@@ -73,4 +73,19 @@ public class CategoriaDAO implements CrudDAO<Categoria, Integer> {
         }
         return lista;
     }
+
+    public List buscarPorNombre(String criterio) throws SQLException {
+        List lista = new ArrayList<>();
+        String sql = "SELECT id, nombre, activa FROM categoria WHERE LOWER(nombre) LIKE LOWER(?) ORDER BY id";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, "%" + criterio.trim() + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(new Categoria(rs.getInt("id"), rs.getString("nombre"), rs.getBoolean("activa")));
+                }
+            }
+        }
+        return lista;
+    }
 }

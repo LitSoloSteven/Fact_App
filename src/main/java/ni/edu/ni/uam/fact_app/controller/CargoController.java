@@ -2,6 +2,8 @@ package ni.edu.ni.uam.fact_app.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -9,7 +11,6 @@ import ni.edu.ni.uam.fact_app.dao.CargoDAO;
 import ni.edu.ni.uam.fact_app.model.Cargo;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public class CargoController {
 
@@ -25,6 +26,7 @@ public class CargoController {
 
     private final CargoDAO cargoDAO = new CargoDAO();
     private final ObservableList<Cargo> listaCargos = FXCollections.observableArrayList();
+    private FilteredList<Cargo> filtroCargos;
     private boolean modoEdicion = false;
 
     @FXML
@@ -33,7 +35,14 @@ public class CargoController {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 
-        tblCargos.setItems(listaCargos);
+        filtroCargos = new FilteredList<>(listaCargos, c -> true);
+
+        txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> aplicarFiltro());
+
+        SortedList<Cargo> listaOrdenada = new SortedList<>(filtroCargos);
+        listaOrdenada.comparatorProperty().bind(tblCargos.comparatorProperty());
+        tblCargos.setItems(listaOrdenada);
+
         cargarDatos();
     }
 
@@ -43,6 +52,25 @@ public class CargoController {
         } catch (SQLException e) {
             mostrarMensaje(Alert.AlertType.ERROR, "Error", "No se pudieron cargar los cargos: " + e.getMessage());
         }
+    }
+
+    private void aplicarFiltro() {
+        String criterio = txtBuscar.getText() == null ? "" : txtBuscar.getText().trim().toLowerCase();
+
+        filtroCargos.setPredicate(cargo -> {
+            if (criterio.isBlank()) return true;
+
+            boolean coincideId = cargo.getId() != null && String.valueOf(cargo.getId()).contains(criterio);
+            boolean coincideNombre = cargo.getNombre() != null && cargo.getNombre().toLowerCase().contains(criterio);
+            boolean coincideDesc = cargo.getDescripcion() != null && cargo.getDescripcion().toLowerCase().contains(criterio);
+
+            return coincideId || coincideNombre || coincideDesc;
+        });
+    }
+
+    @FXML
+    private void buscar() {
+        aplicarFiltro();
     }
 
     @FXML
@@ -71,30 +99,6 @@ public class CargoController {
             mostrarMensaje(Alert.AlertType.ERROR, "Error", "El ID debe ser un número entero válido.");
         } catch (SQLException e) {
             mostrarMensaje(Alert.AlertType.ERROR, "Error BD", "Error al guardar en base de datos: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void buscar() {
-        String criterio = txtBuscar.getText().trim();
-        
-        if (criterio.isBlank()) {
-            cargarDatos();
-            return;
-        }
-
-        try {
-            List encontrados = cargoDAO.buscarPorCriterio(criterio);
-
-            if (!encontrados.isEmpty()) {
-                listaCargos.setAll(encontrados);
-            } else {
-                listaCargos.clear();
-                mostrarMensaje(Alert.AlertType.INFORMATION, "Búsqueda",
-                        "No se encontró ningún cargo que coincida con: \"" + criterio + "\".");
-            }
-        } catch (SQLException e) {
-            mostrarMensaje(Alert.AlertType.ERROR, "Error BD", "Error al buscar cargo: " + e.getMessage());
         }
     }
 

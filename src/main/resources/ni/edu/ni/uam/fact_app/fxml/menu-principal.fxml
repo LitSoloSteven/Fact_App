@@ -18,11 +18,11 @@
                 </Menu>
             </MenuBar>
 
-            <ToolBar prefHeight="110.0" prefWidth="900.0" style="-fx-padding: 10 25;">
-                <HBox alignment="CENTER_LEFT" spacing="300.0">
+            <ToolBar prefHeight="23.0" prefWidth="900.0" style="-fx-padding: 10 25;">
+                <HBox alignment="CENTER_LEFT" spacing="345.0">
                     <Button fx:id="btnProductos" onAction="#abrirProductos" style="-fx-background-color: transparent; -fx-cursor: hand;">
                         <graphic>
-                            <ImageView fitHeight="70.0" fitWidth="80.0" mouseTransparent="true" preserveRatio="true">
+                            <ImageView fitHeight="36.0" fitWidth="36.0" mouseTransparent="true" preserveRatio="true">
                                 <Image url="@../icons/productos.png" />
                             </ImageView>
                         </graphic>
@@ -31,7 +31,7 @@
 
                     <Button fx:id="btnCategorias" onAction="#abrirCategorias" style="-fx-background-color: transparent; -fx-cursor: hand;">
                         <graphic>
-                            <ImageView fitHeight="65.0" fitWidth="80.0" mouseTransparent="true" preserveRatio="true">
+                            <ImageView fitHeight="36.0" fitWidth="36.0" mouseTransparent="true" preserveRatio="true">
                                 <Image url="@../icons/categorias.png" />
                             </ImageView>
                         </graphic>
@@ -40,7 +40,7 @@
 
                     <Button fx:id="btnCargos" onAction="#abrirCargos" style="-fx-background-color: transparent; -fx-cursor: hand;">
                         <graphic>
-                            <ImageView fitHeight="62.0" fitWidth="80.0" mouseTransparent="true" preserveRatio="true">
+                            <ImageView fitHeight="36.0" fitWidth="36.0" mouseTransparent="true" preserveRatio="true">
                                 <Image url="@../icons/cargos.png" />
                             </ImageView>
                         </graphic>
@@ -85,7 +85,7 @@
             <padding>
                 <Insets bottom="20.0" left="20.0" right="40.0" top="10.0" />
             </padding>
-            <ImageView fx:id="imgLogo" fitHeight="200.0" fitWidth="280.0" preserveRatio="true">
+            <ImageView fx:id="imgLogo" fitHeight="118.0" fitWidth="114.0" preserveRatio="true">
                 <Image url="@../icons/logo.png" />
             </ImageView>
             <Label style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Sistema de Facturación" />
@@ -99,7 +99,7 @@
             </padding>
             <Button fx:id="btnSalir" onAction="#salir" style="-fx-background-color: transparent; -fx-cursor: hand;">
                 <graphic>
-                    <ImageView fitHeight="45.0" fitWidth="50.0" mouseTransparent="true" preserveRatio="true">
+                    <ImageView fitHeight="36.0" fitWidth="36.0" mouseTransparent="true" preserveRatio="true">
                         <Image url="@../icons/salir.png" />
                     </ImageView>
                 </graphic>
